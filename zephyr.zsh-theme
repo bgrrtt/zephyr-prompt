@@ -59,6 +59,17 @@ zephyr_git_active_remote () {
   echo $git_status_str
 }
 
+# =============================================================================
+# Kubernetes Control Context
+
+zephyr_kube_context () {
+  local kube_context=$(kubectl config current-context 2>/dev/null)
+  [[ -z $kube_context ]] && return
+  local kube_namespace=$(kubectl config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)
+  [[ -n $kube_namespace && "$kube_namespace" != "default" ]] && kube_context="$kube_context ($kube_namespace)"
+  echo $kube_context
+}
+
 
 # =============================================================================
 # Prompt
@@ -108,7 +119,7 @@ prompt_zephyr_setup() {
 
   PROMPT=''
   PROMPT+='${new_prompt_lines}'
-  PROMPT+='$(zephyr_cwd)$(zephyr_git_active_remote)$(zephyr_git_active_branch)'
+  PROMPT+='$(zephyr_cwd)$(zephyr_git_active_remote)$(zephyr_git_active_branch)$(zephyr_kube_context)'
   PROMPT+='${new_line}'
   PROMPT+='$(zephyr_char)'
 
