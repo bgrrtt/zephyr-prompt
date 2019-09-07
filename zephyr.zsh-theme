@@ -1,15 +1,22 @@
 # vim:et sts=2 sw=2 ft=zsh
-#
+# =============================================================================
 # Zephyr Prompt
 # =============
 # Requires zimfw's git-info module
 
+# =============================================================================
+# Prompt Character
+
 zephyr_char () {
-  success_char_str="%F{green}❯%F{green}❯"
-  failure_char_str="%F{red}❯%F{red}❯"
+  success_char_str="%F{green}❯%F{green}❯%F{white}"
+  failure_char_str="%F{red}❯%F{red}❯%F{white}"
   prompt_char_str="%(0?.$success_char_str.$failure_char_str) "
   echo $prompt_char_str
 }
+
+
+# =============================================================================
+# Current Working Directory
 
 zephyr_cwd () {
   inside_git_repo="$(git rev-parse --is-inside-work-tree 2>/dev/null)"
@@ -24,10 +31,18 @@ zephyr_cwd () {
   echo $cwd_str
 }
 
+
+# =============================================================================
+# Time
+
 zephyr_time () {
   time_str="%F{yellow}%D{%T}"
   echo $time_str
 }
+
+
+# =============================================================================
+# Git
 
 zephyr_git_active_branch () {
   git_branch_str="%F{white}${(e)git_info[active_branch]}%F{white} "
@@ -43,6 +58,35 @@ zephyr_git_active_remote () {
   git_status_str="%F{red}${(e)git_info[active_remote]}%F{white} "
   echo $git_status_str
 }
+
+
+# =============================================================================
+# Kubernetes Control Context
+
+zephyr_kube_context () {
+  local kube_context=$(kubectl config current-context 2>/dev/null)
+  [[ -z $kube_context ]] && return
+  local kube_namespace=$(kubectl config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)
+  [[ -n $kube_namespace && "$kube_namespace" != "default" ]] && kube_context="$kube_context ($kube_namespace)"
+  echo $kube_context
+}
+
+
+# =============================================================================
+# GCloud (Account and Project)
+
+zephyr_gcloud_prompt () {
+    local gcloud_account=$(gcloud config get-value account 2>/dev/null)
+    [[ -z $gcloud_account ]] && return
+    local gcloud_project=$(gcloud config get-value project 2>/dev/null)
+    [[ -z $gcloud_project ]] && return
+    local gcloud_prompt="${gcloud_account}:${gcloud_project}"
+    echo $gcloud_prompt
+}
+
+
+# =============================================================================
+# Prompt
 
 prompt_zephyr_precmd() {
   (( ${+functions[git-info]} )) && git-info
@@ -89,12 +133,12 @@ prompt_zephyr_setup() {
 
   PROMPT=''
   PROMPT+='${new_prompt_lines}'
-  PROMPT+='$(zephyr_cwd)$(zephyr_git_active_remote)$(zephyr_git_active_branch)'
+  PROMPT+='$(zephyr_cwd)$(zephyr_git_active_remote)$(zephyr_git_active_branch)$(zephyr_kube_context)'
   PROMPT+='${new_line}'
   PROMPT+='$(zephyr_char)'
 
   RPROMPT=''
-  RPROMPT+='$(zephyr_git_active_status)$(zephyr_time)'
+  RPROMPT+='$(zephyr_time)$(zephyr_git_active_status)'
 
 }
 
