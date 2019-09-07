@@ -70,6 +70,17 @@ zephyr_kube_context () {
   echo $kube_context
 }
 
+# =============================================================================
+# GCloud (Account and Project)
+
+zephyr_gcloud_prompt () {
+    local gcloud_account=$(gcloud config get-value account 2>/dev/null)
+    [[ -z $gcloud_account ]] && return
+    local gcloud_project=$(gcloud config get-value project 2>/dev/null)
+    [[ -z $gcloud_project ]] && return
+    local gcloud_prompt="${gcloud_account}:${gcloud_project}"
+    echo $gcloud_prompt
+}
 
 # =============================================================================
 # Prompt
