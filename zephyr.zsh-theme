@@ -8,8 +8,8 @@
 # Prompt Character
 
 zephyr_char () {
-  success_char_str="%F{green}❯%F{green}❯"
-  failure_char_str="%F{red}❯%F{red}❯"
+  success_char_str="%F{green}❯%F{green}❯%F{white}"
+  failure_char_str="%F{red}❯%F{red}❯%F{white}"
   prompt_char_str="%(0?.$success_char_str.$failure_char_str) "
   echo $prompt_char_str
 }
