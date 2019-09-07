@@ -1,8 +1,11 @@
 # vim:et sts=2 sw=2 ft=zsh
-#
+# =============================================================================
 # Zephyr Prompt
 # =============
 # Requires zimfw's git-info module
+
+# =============================================================================
+# Prompt Character
 
 zephyr_char () {
   success_char_str="%F{green}❯%F{green}❯"
@@ -10,6 +13,10 @@ zephyr_char () {
   prompt_char_str="%(0?.$success_char_str.$failure_char_str) "
   echo $prompt_char_str
 }
+
+
+# =============================================================================
+# Current Working Directory
 
 zephyr_cwd () {
   inside_git_repo="$(git rev-parse --is-inside-work-tree 2>/dev/null)"
@@ -24,10 +31,18 @@ zephyr_cwd () {
   echo $cwd_str
 }
 
+
+# =============================================================================
+# Time
+
 zephyr_time () {
   time_str="%F{yellow}%D{%T}"
   echo $time_str
 }
+
+
+# =============================================================================
+# Git
 
 zephyr_git_active_branch () {
   git_branch_str="%F{white}${(e)git_info[active_branch]}%F{white} "
@@ -43,6 +58,10 @@ zephyr_git_active_remote () {
   git_status_str="%F{red}${(e)git_info[active_remote]}%F{white} "
   echo $git_status_str
 }
+
+
+# =============================================================================
+# Prompt
 
 prompt_zephyr_precmd() {
   (( ${+functions[git-info]} )) && git-info
