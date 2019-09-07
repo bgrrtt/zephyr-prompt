@@ -59,6 +59,7 @@ zephyr_git_active_remote () {
   echo $git_status_str
 }
 
+
 # =============================================================================
 # Kubernetes Control Context
 
@@ -69,6 +70,7 @@ zephyr_kube_context () {
   [[ -n $kube_namespace && "$kube_namespace" != "default" ]] && kube_context="$kube_context ($kube_namespace)"
   echo $kube_context
 }
+
 
 # =============================================================================
 # GCloud (Account and Project)
@@ -81,6 +83,7 @@ zephyr_gcloud_prompt () {
     local gcloud_prompt="${gcloud_account}:${gcloud_project}"
     echo $gcloud_prompt
 }
+
 
 # =============================================================================
 # Prompt
@@ -135,7 +138,7 @@ prompt_zephyr_setup() {
   PROMPT+='$(zephyr_char)'
 
   RPROMPT=''
-  RPROMPT+='$(zephyr_git_active_status)$(zephyr_time)'
+  RPROMPT+='$(zephyr_time)$(zephyr_git_active_status)'
 
 }
 
